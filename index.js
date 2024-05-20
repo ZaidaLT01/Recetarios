@@ -47,4 +47,4 @@ app.use('/auth', authRutas);
 app.use('/recetas', autenticar, recetaRutas);
 
 //utilizar las rutas de recetas
-// app.use('/recetarios', recetaRutas);
+// app.use('/recetas', recetaRutas);
