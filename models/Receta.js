@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const recetaSchema = new mongoose.Schema({
     nombre:String,
     ingredientes:String,
-    porciones:Number
+    porciones:Number,
+    usuario:{ type:mongoose.Schema.Types.ObjectId,ref: 'Usuario'}
 });
 
 const RecetaModel = mongoose.model('Receta',recetaSchema,'receta');

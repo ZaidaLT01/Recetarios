@@ -1,6 +1,7 @@
 const express = require('express');
 const rutas = express.Router();
 const RecetaModel = require('../models/Receta');
+const UsuarioModel = require('../models/Usuario');
 
 //endpoint para traer todas las recetas
 rutas.get('/traerRecetas',async(req,res)=>{
@@ -17,7 +18,12 @@ rutas.post('/crear',async(req,res)=>{
     const receta=new RecetaModel({
         nombre: req.body.nombre,
         ingredientes: req.body.ingredientes,
-        porciones: req.body.porciones
+        porciones: req.body.porciones,
+        usuario:req.body.usuario //asignar el id del usuario
+
+        /*debido a que ingresamos sesion solo se guarda el ususario del que inicio sesion, a menos que se cambie la autenticacion, o token con el que queramos ingresas a la funcion crear
+        debido a eso en este metodo se puede crear utilizando el id del cuerpo de postman dado, este anterior sirve mucho para lo que es controles de administracion o solo gerente y demas
+        usuario:req.usuario._id */
     })
     console.log(receta);
     try{
@@ -129,5 +135,21 @@ try {
         res.status(500).json({ mensaje :  error.message})
     }
 });*/
+
+
+//REPORTES 1
+rutas.get('/recetaPorUsuario/:usuarioid', async (peticion, res) =>{
+    const {usuarioid} = peticion.params;
+    try{
+        const usuario = await UsuarioModel.findById(usuarioid);
+        if(!usuario)
+            return res.status(404).json({mensaje: 'usuario no encontrado'});
+        const recetas = await RecetaModel.find({usuario:usuarioid}).populate('usuario');
+        res.json(recetas);
+
+    }catch(error){
+        res.status(500).json({ mensaje :  error.message})
+    }
+});
 
 module.exports=rutas;
